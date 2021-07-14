@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "name": "NCVO Feature Manager",
+  "version": "0.1.0",
+  "description": "Turn on/off feature flags",
+  "icons": {
+    "16": "icons/icon_16.png",
+    "32": "icons/icon_32.png",
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+  "content_scripts": [{
+    "matches": [
+      "http://localhost:3000/*",
+      "*://*.development.ncvocloud.net/*",
+      "*://*.integration.ncvocloud.net/*",
+      "*://*.staging.ncvocloud.net/*",
+      "https://www.ncvo.org.uk/*"
+    ],
+    "js": ["jquery.min.js", "jquery-ui.min.js", "content.js"],
+    "css": ["jquery-ui.min.css", "footer.css", "ncvo.css"]
+  }],
+  "web_accessible_resources": [
+    "modal.html",
+    "footer.html"
+  ],
+  "browser_action": {
+    "default_title": "NCVO Debugger"
+  },
+  "permissions": [
+    "activeTab"
+  ]
+}

@@ -1,0 +1,29 @@
+.ncvo-level {
+    font-weight: bold;
+}
+
+.ncvo-level-debug {
+    color: black;
+}
+.ncvo-level-info {
+    color: darkgoldenrod;
+}
+.ncvo-level-warning {
+    color: orange;
+}
+.ncvo-level-error {
+    color: red;
+}
+
+.ncvo-message {
+    font-size: 90%;
+    word-wrap: anywhere;
+}
+
+.ncvo-controls * {
+    display: inline-block;
+}
+
+.ncvo-controls-component {
+    margin-left: 20px;
+}
