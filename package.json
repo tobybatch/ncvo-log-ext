@@ -5,7 +5,8 @@
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
     "build": "webpack --mode=production --config config/webpack.config.js",
-    "package": "crx3 -p -o -x ncvo-feature-manager.zip build"
+    "package": "crx3 -p -o -x ncvo-feature-manager.zip build",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.4.1",
@@ -42,6 +43,10 @@
     ]
   },
   "dependencies": {
-    "@types/chrome": "^0.0.146"
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@types/chrome": "^0.0.146",
+    "husky": "^7.0.1",
+    "standard-version": "^9.3.1"
   }
 }
