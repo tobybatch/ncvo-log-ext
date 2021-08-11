@@ -1,5 +1,25 @@
 #footer {
     position: fixed;
     bottom: 0;
+    width: 100%;
+    background: #dcdcdc;
+    z-index: 99999;
+}
+
+#ncvo-footer-left {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+#footer-text {
+    position: fixed;
+    width: 100%;
+    text-align: center;
+}
+
+#ncvo-logger-btn {
+    position: fixed;
+    bottom: 0;
     right: 0;
 }

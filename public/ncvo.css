@@ -5,12 +5,15 @@
 .ncvo-level-debug {
     color: black;
 }
+
 .ncvo-level-info {
     color: darkgoldenrod;
 }
+
 .ncvo-level-warning {
     color: orange;
 }
+
 .ncvo-level-error {
     color: red;
 }
@@ -26,4 +29,22 @@
 
 .ncvo-controls-component {
     margin-left: 20px;
+}
+
+.ncvo-feature {
+    font-variant: all-small-caps;
+    margin-left: 10px;
+    padding-right: 5px;
+}
+
+.fa.fa-check {
+    display: none;
+    top: 5px;
+    padding-right: 5px;
+}
+
+.fa.fa-times {
+    display: none;
+    top: 5px;
+    padding-right: 5px;
 }
