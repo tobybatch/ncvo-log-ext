@@ -7,15 +7,22 @@
 }
 
 #ncvo-footer-left {
-    position: fixed;
     bottom: 0;
     left: 0;
+    background: green;
 }
 
 #footer-text {
-    position: fixed;
     width: 100%;
     text-align: center;
+    padding-left: 20px;
+}
+
+#footer-reload {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 40px;
 }
 
 #ncvo-logger-btn {

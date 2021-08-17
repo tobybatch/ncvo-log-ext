@@ -7,11 +7,8 @@ const ExtensionReloader = require('webpack-extension-reloader');
 
 const PATHS = require('./paths');
 
-// To re-use webpack configuration across templates,
-// CLI maintains a common webpack configuration file - `webpack.options.js`.
-// Whenever user creates an extension, CLI adds `webpack.options.js` file
-// in template's `config` folder
 const common = {
+    mode: 'development',
     output: {
         // the build folder to output bundles and assets in.
         path: PATHS.build,
@@ -52,7 +49,9 @@ const common = {
             port: 9090,
             reloadPage: true,
             entries: {
-                contentScript: 'content'
+                contentScript: 'content',
+                background: 'background',
+                'content-script': 'content'
             }
         }),
         // Print file sizes

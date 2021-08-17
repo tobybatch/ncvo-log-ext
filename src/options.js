@@ -7,7 +7,7 @@ function save_options() {
                 auth: document.getElementById("auth").checked,
             },
             secrets: {
-                develop: document.getElementById("local").value,
+                local: document.getElementById("local").value,
                 develop: document.getElementById("develop").value,
                 integration: document.getElementById("integration").value,
                 staging: document.getElementById("staging").value,

@@ -7,29 +7,110 @@ const deserialiseCookies = () => {
     return cookies;
 }
 
-const getCookieByName = (feature) => {
-    const cookies = deserialiseCookies()
-    if (Object.keys(cookies).indexOf(cookieName(feature)) !== -1) {
-        return cookies[Object.keys(cookies).indexOf(cookieName(feature))];
-    }
+const getCookieByFeature = (feature) => {
+    const cookies = deserialiseCookies();
+    const cName = cookieName(feature);
+    return cookies[cName];
 }
 
 const cookieName = (feature) => {
     return "fc_hmac_" + feature.toLowerCase();
 }
 
-const offCookie = (feature) => {
-    return cookieName(feature) + "=" + feature.toUpperCase() + ":off";
-}
-
-const cookieIsPresent = (feature) => {
-    return Object.keys(deserialiseCookies()).indexOf(feature) !== -1
-}
-
 const cookieIsOn = (feature) => {
-    return cookieIsPresent(feature) && getCookieByName(feature) !== offCookie(feature);
+    const cookie = getCookieByFeature(feature);
+    return cookie !== undefined && cookie.indexOf(":off") === -1;
 }
 
+const setMessage = (message) => {
+    $("#footer-text").text(message);
+    setTimeout(() => {$("#footer-text").text("")}, 2000);
+}
+
+const getEnv = (location) => {
+    if (location.href.indexOf("localhost") || location.href.indexOf("127.0.0")) {
+        return "local";
+    } else if (location.href.indexOf("develop")) {
+        return "develop";
+    } else if (location.href.indexOf("integration")) {
+        return "integration";
+    } else if (location.href.indexOf("staging")) {
+        return "staging";
+    } else {
+        return "production";
+    }
+}
+
+const featureClick = (e) => {
+    const id = e.currentTarget.id;
+    const feature = id.substr(id.lastIndexOf("-") + 1);
+    const checked = e.currentTarget.checked;
+    if (checked) {
+        chrome.storage.local.get({
+                secrets: {
+                    local: "",
+                    develop: "",
+                    integration: "",
+                    staging: "",
+                    production: "",
+                }
+            }, function (items) {
+                const env = getEnv(window.location);
+                if (items[env] === undefined) {
+                    setMessage("Can't find secret for " + env);
+                }
+                const expireTime = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+                const plainText = feature + items[env];
+                const shaJs = require('sha.js')
+                const sha256hash = shaJs('sha256').update(plainText).digest('hex');
+                document.cookie = `fc_hmac_${feature}=${feature.toUpperCase()}:${sha256hash}; expires=${expireTime}; path=/;`;
+                setMessage("Cookie for " + feature + " set for env " + env);
+                $("#footer-reload").show();
+            }
+        );
+    } else {
+        document.cookie = `fc_hmac_${feature}=LOGGER:off; expires=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toUTCString()}; path=/;`;
+        setMessage("Cookie for " + feature + " cleared.");
+        $("#footer-reload").show();
+    }
+}
+
+const addFeatureButton = (feature) => {
+    const featureId = "ncvo-feature-" + feature;
+    const checked = cookieIsOn(feature);
+    $("#footer-left").append(
+        "<span><input type='checkbox' id='" + featureId + "' " + (checked ? "checked" : "") + ">" +
+        feature +
+        "</inputcheckbox></span>"
+    );
+
+    $("#" + featureId).on("click", featureClick);
+}
+
+const setUpFooter = () => {
+    const footerSrcUrl = chrome.extension.getURL("footer.html");
+    fetch(footerSrcUrl)
+        .then((response) => response.text())
+        .then((text) => {
+            $(document.body).append($(text));
+            chrome.storage.local.get({
+                features: {
+                    logger: false,
+                    auth: false,
+                }
+            }, function (items) {
+                if (items.features) {
+                    for (const key in items.features) {
+                        if (items.features[key]) {
+                            addFeatureButton(key);
+                        }
+                    }
+                }
+            });
+        });
+}
+
+/*
 fetch(chrome.extension.getURL("modal.html"))
     .then((response) => response.text())
     .then((text) => {
@@ -89,14 +170,17 @@ fetch(chrome.extension.getURL("modal.html"))
             });
         });
     });
-
+*/
+setUpFooter();
+/*
 const footerSrcUrl = chrome.extension.getURL("footer.html");
 
 fetch(footerSrcUrl)
-    .then((response) => response.text()) //assuming file contains json
+    .then((response) => response.text())
     .then((text) => {
         $(document.body).append($(text));
 
+        // Logger button
         $("#ncvo-logger-btn").on("click", (event) => {
             $("#ncvo-logger-dialog").dialog({
                 resizable: false,
@@ -113,16 +197,15 @@ fetch(footerSrcUrl)
             }
         }, function (items) {
             const cookies = deserialiseCookies();
-            const cookieNames = Object.keys(cookies);
             for (const feature in items.features) {
                 // Make the icons and label for the feature
                 const id = 'ncvo-footer-' + feature;
                 $("#footer-left").append(
-                    "<span class='ncvo-feature' id='" + id + "'>" +
+                    "<button class='ncvo-feature' id='" + id + "' data-fcfeaturename='" + feature + "'>" +
                     "<i class=\"fa fa-check\" id=\"" + id + "-check\" aria-hidden=\"true\"></i>" +
                     "<i class=\"fa fa-times\" id=\"" + id + "-times\" aria-hidden=\"true\"></i>" +
                     feature +
-                    "</span>"
+                    "</button>"
                 );
                 // Check if the feature is enabled
                 if (cookieIsOn(feature)) {
@@ -134,9 +217,7 @@ fetch(footerSrcUrl)
                 }
                 // Add a listener to toggle the feature
                 $("#" + id).on("click", e => {
-                    const cookies = Object.keys(deserialiseCookies());
-                    const feature = e.target.id.substr(e.target.id.lastIndexOf("-") + 1);
-                    const cookieName = "fc_hmac_" + feature;
+                    const feature = $(e.target).data("fcfeaturename");
                     // Always remove the cookie.
                     document.cookie = offCookie(feature);
                     if (!cookieIsOn(feature)) {
@@ -150,25 +231,30 @@ fetch(footerSrcUrl)
                         }, function (items) {
                             const env = $("#foot-env").val();
                             const secret = items.secrets[env];
+                            console.log(env, secret);
                             if (secret === "" || secret === undefined) {
                                 $("#footer-text").text(env + " secret is not set.");
                                 setTimeout($("#footer-text").text(""), 750);
                             }
                             // what is feature
+                            const cookieName = "fc_hmac_" + feature;
                             const shortName = cookieName.substr(cookieName.lastIndexOf("_") + 1).toUpperCase();
                             const plainText = shortName + secret;
                             // sha256hash = sha256(plaintext.encode("utf-8")).hexdigest()
                             const shaJs = require('sha.js')
                             const sha256hash = shaJs('sha256').update(plainText).digest('hex');
-                            document.cookie = cookieName + "=" + shortName + ":" + sha256hash + "; expires=${new Date(Date.now() + 30*24*60*60*1000).toUTCString()}; path=/;";
+                            const cookie = cookieName + "=" + shortName + ":" + sha256hash + "; expires=${new Date(Date.now() + 30*24*60*60*1000).toUTCString()}; path=/;";
+                            console.log(cookie);
+                            document.cookie = cookie;
 
                             window.location = location.href;
                         });
                     } else {
                         // Always reload to update flags in the FC
-                        window.location = location.href;
+                        window.location = window.location.href;
                     }
                 })
             }
         });
     });
+*/
