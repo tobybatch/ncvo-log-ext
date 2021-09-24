@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NCVO Feature Manager</title>
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        #secrets {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .secret {
+            margin-top: 5px;
+        }
+
+        .secret label {
+            width: 120px;
+            display: inline-block;
+        }
+
+        .secret input {
+            width: 360px;
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="features">
+        <h3>Enable/disable features</h3>
+        <label for="logger"><input type="checkbox" name="logger" id="logger"/>Logger</label><br/>
+        <label for="auth"><input type="checkbox" name="auth" id="auth"/>Auth</label>
+    </div>
+
+    <div id="secrets">
+
+        <h3>Shared secrets</h3>
+
+        <div class="secret">
+            <label for="local">
+                Local
+            </label>
+            <input type="text" name="develop" id="local"/>
+        </div>
+
+        <div class="secret">
+            <label for="develop">
+                Development
+            </label>
+            <input type="text" name="develop" id="develop"/>
+        </div>
+
+        <div class="secret">
+            <label for="integration">
+                Integration
+            </label>
+            <input type="text" name="integration" id="integration"/>
+        </div>
+
+        <div class="secret">
+            <label for="staging">
+                Staging
+            </label>
+            <input type="text" name="staging" id="staging"/>
+        </div>
+
+        <div class="secret">
+            <label for="production">
+                Production
+            </label>
+            <input type="text" name="production" id="production"/>
+        </div>
+
+    </div>
+
+    <button id="save">Save</button> <span id="status"></span>
+
+<script src="options.js"></script>
+</body>
+</html>

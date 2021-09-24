@@ -9,17 +9,27 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "content_scripts": [{
-    "matches": [
-      "http://localhost:3000/*",
-      "*://*.development.ncvocloud.net/*",
-      "*://*.integration.ncvocloud.net/*",
-      "*://*.staging.ncvocloud.net/*",
-      "https://www.ncvo.org.uk/*"
-    ],
-    "js": ["jquery.min.js", "jquery-ui.min.js", "content.js"],
-    "css": ["jquery-ui.min.css", "footer.css", "ncvo.css"]
-  }],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost:3000/*",
+        "*://*.development.ncvocloud.net/*",
+        "*://*.integration.ncvocloud.net/*",
+        "*://*.staging.ncvocloud.net/*",
+        "https://www.ncvo.org.uk/*"
+      ],
+      "js": [
+        "jquery.min.js",
+        "jquery-ui.min.js",
+        "content.js"
+      ],
+      "css": [
+        "jquery-ui.min.css",
+        "footer.css",
+        "ncvo.css"
+      ]
+    }
+  ],
   "web_accessible_resources": [
     "modal.html",
     "footer.html"
@@ -28,6 +38,14 @@
     "default_title": "NCVO Debugger"
   },
   "permissions": [
-    "activeTab"
-  ]
+    "activeTab",
+    "storage"
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true,
+    "js": [
+      "options.js"
+    ]
+  }
 }

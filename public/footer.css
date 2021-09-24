@@ -1,4 +1,30 @@
-#footer {
+#ncvoext-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #dcdcdc;
+    z-index: 99999;
+}
+
+#ncvoext-footer-left {
+    bottom: 0;
+    left: 0;
+}
+
+#ncvoext-footer-text {
+    width: 100%;
+    text-align: center;
+    padding-left: 20px;
+}
+
+#ncvoext-footer-reload {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 40px;
+}
+
+#ncvoext-logger-btn {
     position: fixed;
     bottom: 0;
     right: 0;
